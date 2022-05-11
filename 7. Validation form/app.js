@@ -6,7 +6,9 @@ const inpMdp = document.querySelector(".form-groupe:nth-child(3) input");
 const inpConfirme = document.querySelector(".form-groupe:nth-child(4) input");
 const allImg = document.querySelectorAll(".icone-verif");
 const allSpan = document.querySelectorAll("span");
-const allLigne = document.querySelector(".ligne div");
+const allLigne = document.querySelectorAll(".ligne div");
+
+// Validation création du pseudo
 
 inpUtilisateur.addEventListener("input", (e) => {
   if (e.target.value.length >= 3) {
@@ -19,6 +21,8 @@ inpUtilisateur.addEventListener("input", (e) => {
     allSpan[0].style.display = "inline";
   }
 });
+
+// Validation création du mail
 
 inpMail.addEventListener("input", (e) => {
   const regexEmail = /\S+@\S+\.\S+/;
@@ -33,3 +37,98 @@ inpMail.addEventListener("input", (e) => {
     allSpan[1].style.display = "inline";
   }
 });
+
+// Validation création du MDP
+
+let valeurInp;
+
+const specialCar = /[^a-zA-Z0-9]/; // tout les caractère spécieaux
+const alphabet = /[a-z]/i; // toutes les lettres (maj et min grace au i)
+const chiffres = /[0-9]/; // tout les chiffres
+
+let objValidation = {
+  symbole: 0,
+  lettres: 0,
+  chiffres: 0,
+};
+
+inpMdp.addEventListener("input", (e) => {
+  valeurInp = e.target.value;
+
+  if (valeurInp.search(specialCar) !== -1) {
+    objValidation.symbole = 1;
+  }
+  if (valeurInp.search(alphabet) !== -1) {
+    objValidation.lettres = 1;
+  }
+  if (valeurInp.search(chiffres) !== -1) {
+    objValidation.chiffres = 1;
+  }
+
+  if ((e.inputType = "deleteContentBackward")) {
+    if (valeurInp.search(specialCar) === -1) {
+      objValidation.symbole = 0;
+    }
+    if (valeurInp.search(alphabet) === -1) {
+      objValidation.lettres = 0;
+    }
+    if (valeurInp.search(chiffres) === -1) {
+      objValidation.chiffres = 0;
+    }
+  }
+
+  let testAll = 0;
+  for (const property in objValidation) {
+    if (objValidation[property] > 0) {
+      testAll++;
+    }
+  }
+  if (testAll < 3) {
+    allSpan[2].style.display = "inline";
+    allImg[2].style.display = "inline";
+    allImg[2].src = "ressources/error.svg";
+  } else {
+    allSpan[2].style.display = "none";
+    allImg[2].src = "ressources/check.svg";
+  }
+
+  // force mdp
+  if(valeurInp.length <= 6 && valeurInp.length > 0){
+    allLigne[0].style.display = 'block';
+    allLigne[1].style.display = 'none';
+    allLigne[2].style.display = 'none';
+}
+else if (valeurInp.length > 6 && valeurInp.length <= 9) {
+    allLigne[0].style.display = 'block';
+    allLigne[1].style.display = 'block';
+    allLigne[2].style.display = 'none';
+}
+else if (valeurInp.length > 9) {
+    allLigne[0].style.display = 'block';
+    allLigne[1].style.display = 'block';
+    allLigne[2].style.display = 'block';
+}
+else if (valeurInp.length === 0) {
+    allLigne[0].style.display = 'none';
+    allLigne[1].style.display = 'none';
+    allLigne[2].style.display = 'none';
+}
+});
+
+// confirmation
+
+inpConfirme.addEventListener('input', (e) => {
+
+    if(e.target.value.length === 0){
+        allImg[3].style.display = "inline";
+        allImg[3].src = "ressources/error.svg";
+    }
+    else if(e.target.value === valeurInp){
+        allImg[3].style.display = "inline";
+        allImg[3].src = "ressources/check.svg";
+    } else {
+        allImg[3].style.display = "inline";
+        allImg[3].src = "ressources/error.svg";
+    }
+
+})
